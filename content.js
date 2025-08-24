@@ -14,11 +14,9 @@
     const loginButton = '.btn.btn-primary.btn-login';
     const submitButton = 'button#submit-button';
 
-    // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    //     if (message === "ping") {
-    //         sendResponse({ active: true });
-    //     }
-    // });
+    const correctAnswer = '#correct-answer-field';
+    const yourAnswer = '#users-answer-field';
+    const questionField = '#question-field';
 
     if (document.querySelector(loginTextBox) != null) document.querySelector(loginTextBox).value = username;
     if (document.querySelector(passwordTextBox) != null) document.querySelector(passwordTextBox).value = password;
@@ -32,6 +30,7 @@
                 if (element && element.getAttribute(attribute) === value) {
                     clearInterval(interval);
                     resolve(element);
+                
                 }
             }, 500);
 
@@ -59,33 +58,46 @@
     }
 
     async function answerLoop() {
-        let question = document.querySelector(questionText).textContent.replace(/\([^)]*\)/g, "").trim().split(';')[0].trim();
-        let answer = englishList[targetlangList.indexOf(question)];
-        if (answer == undefined) answer = targetlangList[englishList.indexOf(question)];
+        if(document.querySelector(correctAnswer) == null){
+            let question = document.querySelector(questionText).textContent.replace(/\([^)]*\)/g, "").trim().split(';')[0].trim();
+            let answer = englishList[targetlangList.indexOf(question)];
+            if (answer == undefined) answer = targetlangList[englishList.indexOf(question)];
 
-        const input = document.querySelector(answerTextBox);
-        input.focus();
-        input.value = answer;
-        input.dispatchEvent(new Event('input', { bubbles: true })); 
+            const input = document.querySelector(answerTextBox);
+            input.focus();
+            input.value = answer;
+            input.dispatchEvent(new Event('input', { bubbles: true })); 
 
-        const btn = document.getElementById("submit-button");
-        const ngElem = angular.element(btn);
-        const scope = ngElem.scope() || ngElem.isolateScope();
+            const btn = document.getElementById("submit-button");
+            const ngElem = angular.element(btn);
+            const scope = ngElem.scope() || ngElem.isolateScope();
 
-        if (scope && scope.self && typeof scope.self.onSubmitClick === "function") {
+            if (scope && scope.self && typeof scope.self.onSubmitClick === "function") {
 
-            const fakeEvent = {
-                originalEvent: {
-                    detail: 1, 
-                    isTrusted: true,
-                    bubbles: true
-                }
-            };
+                const fakeEvent = {
+                    originalEvent: {
+                        detail: 1, 
+                        isTrusted: true,
+                        bubbles: true
+                    }
+                };
 
-            scope.self.onSubmitClick(fakeEvent);
-            scope.$apply(); 
+                scope.self.onSubmitClick(fakeEvent);
+                scope.$apply(); 
+            }
         }
- 
+        else{
+            let actualQuestion = document.querySelector(questionField).textContent;
+            console.log(document.querySelector(correctAnswer).textContent)
+            if(document.querySelector(yourAnswer).textContent == "undefined") {
+                englishList.push(document.querySelector(correctAnswer).textContent);
+                targetlangList.push(actualQuestion);
+                console.log(englishList);
+                console.log(targetlangList);
+            }
+            else{
+            }
+        }
 
     }
 
