@@ -6,5 +6,6 @@ A bot for Education Perfect, it does reading and writing tasks for language.
 2. press ` on the word lists page to load the word list(there should be a popup if successful)
 3. Start the questions and press \ to answer a question
 
+For educational purposes only
 
 NOTE: this is in the early stages so it might not be perfect
